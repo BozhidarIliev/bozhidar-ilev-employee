@@ -1,0 +1,2 @@
+C:\Users\bojid\Desktop\New folder (2)\bozhidar-ilev-employee\EmployeePairs\reactapp\obj\Debug\reactapp.esproj.SuggestedBindingRedirects.cache
+C:\Users\bojid\Desktop\New folder (2)\bozhidar-ilev-employee\EmployeePairs\reactapp\obj\Debug\reactapp.esproj.CoreCompileInputs.cache

@@ -1,59 +1,36 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import FileInput from './components/FileInput';
+import ProjectTable from './components/ProjectTable';
 
-export default class App extends Component {
-    static displayName = App.name;
+function App() {
+    const [projects, setProjects] = useState([]);
 
-    constructor(props) {
-        super(props);
-        this.state = { forecasts: [], loading: true };
-    }
+    const handleProcessFile = (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
 
-    componentDidMount() {
-        this.populateWeatherData();
-    }
+        fetch('https://localhost:7038/api/project/getprojects', {
+            method: 'POST',
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setProjects(data);
+            })
+            .catch((error) => {
+                console.error('Error processing file:', error);
+            });
+    };
 
-    static renderForecastsTable(forecasts) {
-        return (
-            <table className='table table-striped' aria-labelledby="tabelLabel">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {forecasts.map(forecast =>
-                        <tr key={forecast.date}>
-                            <td>{forecast.date}</td>
-                            <td>{forecast.temperatureC}</td>
-                            <td>{forecast.temperatureF}</td>
-                            <td>{forecast.summary}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        );
-    }
-
-    render() {
-        let contents = this.state.loading
-            ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-            : App.renderForecastsTable(this.state.forecasts);
-
-        return (
-            <div>
-                <h1 id="tabelLabel" >Weather forecast</h1>
-                <p>This component demonstrates fetching data from the server.</p>
-                {contents}
-            </div>
-        );
-    }
-
-    async populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        this.setState({ forecasts: data, loading: false });
-    }
+    return (
+        <div className="container">
+            <h1 className="my-4">Employee Project Viewer</h1>
+            <FileInput onFileChange={handleProcessFile} />
+            <h2 className="my-4">Common Projects</h2>
+            {projects && projects.length > 0 ? <ProjectTable projects={projects} /> : <p>No common projects found.</p>}
+        </div>
+    );
 }
+
+export default App;
